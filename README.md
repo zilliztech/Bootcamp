@@ -7,4 +7,4 @@ Infini是新一代海量时空数据可视化分析引擎 Infini Analytics ，�
 
 2. 提供对 Infini 数据导入并对数据分析的相关指导
 
-# 点击进入：  [**在线训练营**](docs/README.md)
+# 点击进入：  [**在线训练营**](nyc_taxi_50w_demo.md)
