@@ -186,7 +186,7 @@ http://192.168.1.60
 
    点击右上角`应用`，出现以下界面：
 
-   ![image](F:\files\bootcamp_infini\assets\nyc_after_add_usd.png)
+   ![image](./assets/nyc_after_add_usd.png)
 
    
 
@@ -198,7 +198,7 @@ http://192.168.1.60
 
    点击右上角`应用`，出现以下界面：
 
-![](./assets/nyc_after_add_km.png)
+	![](./assets/nyc_after_add_km.png)
 
    
 
@@ -210,6 +210,6 @@ http://192.168.1.60
 
    点击右上角`应用`，出现以下界面：
 
-![image](./assets/nyc_after_add_market.png)
+	![image](./assets/nyc_after_add_market.png)
 
    
