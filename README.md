@@ -1,2 +1,10 @@
-# Bootcamp
-Tourials for your very first analysis with Infini
+# 关于 Infini 在线训练营
+Infini是新一代海量时空数据可视化分析引擎 Infini Analytics ，具有完整的自主知识产权。 Infini Analytics 率先使用图形处理单元（ GPU ）的大规模并行处理和视觉渲染能力进行数据可视化呈现。与传统方案相比， Infini Analytics 平台具备高吞吐、高性价比、低延时三重优势，单位算力成本降至传统方案的 10% 。用户可以对十亿级数据集进行查询和可视化交互，并获得秒内响应。
+
+本在线训练营的目的是：
+
+1. 帮助用户快速熟悉 Infini 产品的安装、使用
+
+2. 提供对 Infini 数据导入并分析测试的相关指导
+
+# 点击进入：  [**在线训练营**](docs/README.md)
