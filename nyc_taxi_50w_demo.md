@@ -2,7 +2,7 @@
 
 ## 1、测试数据准备
 
-本实验使用的50万条开放纽约出租车数据，数据下载地址：https://pan.baidu.com/s/1Njtr1316E25vuLzkB4k6RA，建议将数据下载至/tmp下。
+本实验使用的50万条开放纽约出租车数据，数据下载地址：https://pan.baidu.com/s/1Njtr1316E25vuLzkB4k6RA, 建议将数据下载至/tmp下。
 
 经实测，以下硬件配置可顺利完成实验：
 
@@ -156,9 +156,9 @@ http://192.168.1.60
 
    ![image](F:\files\bootcamp_infini\assets\after_add_chart.PNG)
 
-   - 创建纽约出租车点位信息
+   - **创建纽约出租车点位信息**
 
-   上方选择点地图，点击数据表下选择框，选择nyc_taxi_50w，在经度`添加计量`dropoff_longitude，纬度`添加计量`dropoff_latitude，修改地图名为`纽约出租车`：
+   选择点地图，点击数据表的选择框，选择 nyc_taxi_50w ，在经度`添加计量` dropoff_longitude ，纬度`添加计量` dropoff_latitude ，修改地图名为`纽约出租车`：
 
    ![image](./assets/nyc_add_gis.png)
 
@@ -166,13 +166,15 @@ http://192.168.1.60
 
    ![image](./assets/nyc_after_add_gis.png)
 
-   - 创建纽约出租车时间轴折线图
+   
 
-   右上方选择`新增图表`，选择折线图，左侧 X 轴`添加维度`tpep_dropoff_datetime，分组时选择`天`，Y 轴`添加维度`total_amount，修改折线图名为`纽约出租车计量($ USD)`，点击右上角`应用`：
+   - **创建纽约出租车时间轴折线图**
+
+   右上方单机`新增图表`，选择折线图，左侧 X 轴`添加维度` tpep_dropoff_datetime，分组时选择`天`，Y 轴`添加维度` total_amount ，修改折线图名为`纽约出租车计量($ USD)`：
 
    ![image](./assets/nyc_add_line.png)
 
-   点击右上角`应用`：
+   点击右上角`应用`，出现以下界面：
 
    ![image](./assets/nyc_after_add_line.png)
 
@@ -180,7 +182,7 @@ http://192.168.1.60
 
    - 创建纽约出租车费用计数
 
-   右上方选择`新增图表`，选择数图，左侧数值`添加计量`total_amount，后点击求和，在右侧将计量数值格式改为Sl 1.2k，修改数图名为`纽约出租车费用($ USD)`：
+   右上方选择`新增图表`，选择数图，左侧数值`添加计量` total_amount ，后点击求和，在右侧将计量数值格式改为 Sl 1.2k ，修改数图名为`纽约出租车费用($ USD)`：
 
    ![image](./assets/nyc_add_usd.png)
 
@@ -192,24 +194,24 @@ http://192.168.1.60
 
    - 创建纽约出租车里程计数
 
-   右上方选择`新增图表`，选择数图，左侧数值`添加计量`trip_distance，后点击求和，在右侧将计量数值格式改为Sl 1.2k，修改数图名为`纽约出租车里程(km)`：
+   右上方选择`新增图表`，选择数图，左侧数值`添加计量` trip_distance ，后点击求和，在右侧将计量数值格式改为 Sl 1.2k ，修改数图名为`纽约出租车里程(km)`：
 
    ![image](./assets/nyc_add_km.png)
 
-   点击右上角`应用`，出现以下界面：
+	点击右上角`应用`，出现以下界面：
 
-	![](./assets/nyc_after_add_km.png)
+   ![](./assets/nyc_after_add_km.png)
 
    
 
    - 创建纽约出租车市场份额
 
-   右上方选择`新增图表`，选择饼图，左侧维度`添加维度`vendor_id，点击计量下方选择框，选择passenger_count，后点击求和，修改饼图名为`纽约出租车市场份额`：
+   右上方选择`新增图表`，选择饼图，左侧维度`添加维度` vendor_id ，点击计量下方选择框，选择 passenger_count ，后点击求和，修改饼图名为`纽约出租车市场份额`：
 
    ![image](./assets/nyc_add_market.png)
 
-   点击右上角`应用`，出现以下界面：
+	点击右上角`应用`，出现以下界面：
 
-	![image](./assets/nyc_after_add_market.png)
-
+   ![image](./assets/nyc_after_add_market.png)
    
+   最终，纽约出租车数据分析完成！
