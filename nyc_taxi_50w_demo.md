@@ -154,7 +154,7 @@ http://192.168.1.60
 
    点击` +ADD Chart`，出现以下界面：
 
-   ![image](F:\files\bootcamp_infini\assets\after_add_chart.PNG)
+   ![image](./assets/after_add_chart.PNG)
 
    - **创建纽约出租车点位信息**
 
