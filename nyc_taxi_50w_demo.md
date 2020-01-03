@@ -19,25 +19,25 @@
 
 ## 2、设置 MegaWise 参数
 
-在开始之前，请确保已安装 [MegaWise](https://www.zilliz.com/cn/docs/v0.4.0/install_megawise)，进入自定义 MegaWise 安装目录，以下将以 `/home/$USER/megawise` 目录为例，进入该目录，设置 MegaWise 参数：
+在开始之前，请确保已安装 [MegaWise](https://www.zilliz.com/cn/docs/v0.5.0/install_megawise)，进入自定义 MegaWise 安装目录，以下将以 `/home/$USER/megawise` 目录为例，进入该目录，设置 MegaWise 参数：
 
-1. 打开 `conf` 目录下的 `chewie_main.yaml` 配置文件，修改如下片段：
+1. 打开 `conf` 目录下的 `user_config.yaml` 配置文件，定位到如下片段：
 
     ```yaml
-    cache:  # size in GB
-    cpu:
-        physical_memory: 16
-        partition_memory: 16
+    memory:
+        cpu:
+            physical_memory: 16 # size in GB
+            partition_memory: 16 # size in GB
 
-    gpu:
-        gpu_num: 1
-        physical_memory: 2
-        partition_memory: 2 
+        gpu:
+            num: 2
+            physical_memory: 2 # size in GB
+            partition_memory: 2 # size in GB
     ```
 
-> 注意：`cpu` 部分 `physical_memory` 和 `partition_memory` 应小于本机的物理内存大小；
+> 注意：`cpu` 部分 `physical_memory` 和 `partition_memory` 均设置为服务器共享内存可用容量的70%以上；
 >
-> `gpu_num` 应小于服务器上的显卡数量，`physical_memory` 应小于本机中全局内存最小的显卡的全局内存大小。
+> `num` 表示当前 MegaWise 使用的 GPU 数量，`physical_memory` 和 `partition_memory` 设置为单张显卡显存容量的值减2。。
 
 2. 打开 `conf` 目录下面的 `megawise_config.yaml` 配置文件，修改如下片段：
 
@@ -55,70 +55,142 @@
 
 ## 3、启动 MegaWise 并导入测试数据
 
-1. 查看 MegaWise Docker 容器，获取 CONTAINER ID 信息。
+1. 启动MegaWise之后，可以选择从Docker内部连接MegaWise或者从Docker外部连接MegaWise。
+
+   >注意：如果要使用infini可视化界面，必须从Docker外部连接MegaWise。
+
+   从Docker**内部**连接MegaWise：
+
+   进入MegaWise Docker的bash命令并连接MegaWise数据库：
 
    ```bash
-   $ docker ps 
-   CONTAINER ID	IMAGE	COMMAND		CREATED		STATUS		PORTS	 NAMES
-   4aed62f7f5f1  a1e52c9d94a3  "/docker-entrypoint.…"   15 hours ago   Up 15 hours 0.0.0.0:5433->5432/tcp   fervent_perlman
+   $ docker exec -u `id -u` -it $CONTAINER_ID bash
+   $ cd script && ./connect.sh
    ```
 
-   > 如果 `docker ps` 查看不到 MegaWise 相关信息，则使用 `docker ps -a`
-
-2. 启动 MegaWise Docker 容器。
+   如果出现以下信息：
 
    ```bash
-   $ docker restart <CONTAINER ID>
-   ```
-
-3. 进入 MegaWise Docker 容器。
-
-   ```bash
-   $ docker exec -u megawise -it <CONTAINER ID> bash
-   megawise@4aed62f7f5f1:/megawise$
-   ```
-
-4. 连接数据库。
-
-   ```bash
-   megawise@4aed62f7f5f1:/megawise$ cd script
-   megawise@4aed62f7f5f1:/megawise/script$ ./connect.sh 
-   psql (11.1)
+   psql (11.6 (Ubuntu 11.6-1.pgdg18.04+1), server 11.1)
    Type "help" for help.
-   postgres=# 
+   
+   postgres=#
    ```
 
-5. 切换用户并导入测试数据。
+   就说明成功连接上MegaWise了。
+
+   
+
+   从Docker**外部**连接MegaWise：
+
+   关闭MegaWise：
+
+   ```bash
+   $ docker stop $CONTAINER_ID
+   ```
+
+   进入MegaWise的工作目录进行以下修改：
+
+    打开`data`目录下面的`postgresql.conf`配置文件。将`listen_addresses`参数的值设置为`'*'`（注意引号）并取消此行的注释。
+
+   打开`data`目录下面的`pg_hba.conf`配置文件。在`#IPv4 local connections`下方添加如下行：
+
+   ```
+   host   all      all     0.0.0.0/0      trust
+   ```
+
+   重新启动MegaWise。
+
+   >注意：您不能使用`docker start $CONTAINER_ID`的方式来重新启动MegaWise。
+
+   ```bash
+   $ docker run --gpus all --shm-size $SHM_SIZE \
+                           -e USER=`id -u` -e GROUP=`id -g` \
+                           -v $WORK_DIR/conf:/megawise/conf \
+                           -v $WORK_DIR/data:/megawise/data \
+                           -v $WORK_DIR/logs:/megawise/logs \
+                           -v $WORK_DIR/server_data:/megawise/server_data \
+                           -v /home/$USER/.nv:/home/megawise/.nv \
+                           -v /tmp:/tmp \
+                           -p 5433:5432 \
+                           $IMAGE_ID
+   ```
+
+   
+
+2. 操作MegaWise。
 
    ```sql
-   postgres=# \c - zilliz
-   You are now connected to database "postgres" as user "zilliz".
-   postgres=> DROP TABLE IF EXISTS nyc_taxi_50w;
-   DROP TABLE
-   postgres=> CREATE TABLE nyc_taxi_50w(
-       vendor_id               TEXT NOT NULL,
-       tpep_pickup_datetime    TIMESTAMP NOT NULL,
-       tpep_dropoff_datetime   TIMESTAMP NOT NULL,
-       passenger_count         INT4 NOT NULL,
-       trip_distance           FLOAT8 NOT NULL,
-       old_pickup_longitude    FLOAT8 NOT NULL,
-       old_pickup_latitude     FLOAT8 NOT NULL,
-       dropoff_longitute       FLOAT8 NOT NULL,
-       dropoff_latitute        FLOAT8 NOT NULL,
-       fare_amount             FLOAT8 NOT NULL,
-       tip_amount              FLOAT8 NOT NULL,
-       total_amount            FLOAT8 NOT NULL,
-       pickup_longitude        FLOAT8 NOT NULL,
-       pickup_latitude         FLOAT8 NOT NULL
-   );
-   
-   postgres=> copy nyc_taxi_50w from '/tmp/nyc_taxi_50w.csv' with csv header delimiter ',';
-   COPY 500000
+   $ psql -U $USER_ID -p 5433 -h $IP_ADDR -d postgres
    ```
+
+   > `$USER_ID`可以通过以下命令得到：
+
+   ```bash
+   $ id -u
+   ```
+
+   `$IP_ADDR`可以通过以下命令得到：
+
+   ```bash
+   $ ifconfig
+   ```
+
+   如果出现以下信息就说明成功连接上MegaWise：
+
+   ```sql
+   psql (11.6 (Ubuntu 11.6-1.pgdg18.04+1), server 11.1)
+   Type "help" for help.
+   
+   postgres=#
+   ```
+
+   
+
+3. 创建MegaWise用户并导入测试数据。
+
+   在postgres数据库中创建一个用户。用户名为`zilliz`，密码为`zilliz`。
+
+   ```sql
+   postgres=# CREATE USER zilliz WITH PASSWORD 'zilliz';
+   postgres=# grant all privileges on database postgres to zilliz;
+   ```
+
+​       用户创建完成后，您可以使用创建好的用户向postgres数据库中导入示例数据。
+
+​       获取示例数据：
+
+```bash
+$ wget -P /tmp https://raw.githubusercontent.com/zilliztech/infini/v0.5.0/sample_data/nyc_taxi_data.csv
+```
+
+​      创建扩展、建表、并导入示例数据：
+
+```sql
+postgres=# create extension zdb_fdw;
+  postgres=# create table nyc_taxi(
+   vendor_id text,
+   tpep_pickup_datetime timestamp,
+   tpep_dropoff_datetime timestamp,
+   passenger_count int,
+   trip_distance float,
+   pickup_longitute float,
+   pickup_latitute float,
+   dropoff_longitute float,
+   dropoff_latitute float,
+   fare_amount float,
+   tip_amount float,
+   total_amount float
+   );
+  postgres=# copy nyc_taxi from '/tmp/nyc_taxi_data.csv'
+   WITH DELIMITER ',' csv header;
+```
+
+
 
 ## 4、进入 Infini 可视化界面并新建仪表盘
 
-请确保已安装并启动 [Infini 可视化界面](https://www.zilliz.com/cn/docs/v0.4.0/install_infini)，推荐使用 Chrome 和 Firefox 浏览器。
+请确保已安装并启动 [Infini 可视化界面](https://www.zilliz.com/cn/docs/v0.5.0/install_infini)，推荐使用 Chrome 和 Firefox 浏览器。
 
 ```shell
 # 192.168.1.60 是运行 Infini docker 的服务器 IP 地址
@@ -142,7 +214,7 @@ http://192.168.1.60
 
    ![fill-megawise-info](./assets/fill-megawise-info.png)
 
-   ![dashboard-list](./assets/dashboard-list.png)
+   ![dashboard-list](./assets/dashboard-list050.PNG)
 
 3. 新建纽约出租车数据的分析界面。
 
@@ -158,11 +230,11 @@ http://192.168.1.60
 
     选择点地图，点击数据表的选择框，选择 `nyc_taxi_50w`，在经度添加计量 `dropoff_longitude`，纬度添加计量 `dropoff_latitude`，修改地图名为 `纽约出租车`：
 
-    ![image](./assets/nyc_add_gis.png)
+    ![image](./assets/add.PNG)
 
     点击右上角`应用`，出现以下界面：
 
-    ![image](./assets/nyc_after_add_gis.png)
+    ![image](./assets/add050.PNG)
 
    
 
@@ -170,22 +242,22 @@ http://192.168.1.60
 
     1. 右上方单机`新增图表`，选择折线图，左侧 X 轴添加维度 `tpep_dropoff_datetime`，分组时选择`天`，Y 轴添加维度 `total_amount`，修改折线图名为 `纽约出租车计量($ USD)`：
 
-        ![image](./assets/nyc_add_line.png)
+        ![image](./assets/nyc_add_line050.PNG)
 
     2. 点击右上角`应用`，出现以下界面：
 
-        ![image](./assets/nyc_after_add_line.png)
+        ![image](./assets/nyc_after_add_line050.PNG)
 
-   
+
 6. 创建纽约出租车费用计数。
 
    1. 右上方选择`新增图表`，选择数图，左侧数值添加计量 `total_amount`，后点击求和，在右侧将计量数值格式改为 `Sl 1.2k`，修改数图名为 `出租车费用($ USD)`：
 
-        ![image](./assets/nyc_add_usd.png)
+        ![image](./assets/nyc_add_usd050.PNG)
 
    2. 点击右上角`应用`，出现以下界面：
 
-        ![image](./assets/nyc_after_add_usd.png)
+        ![image](./assets/nyc_after_add_usd050.PNG)
 
    
 
@@ -193,11 +265,11 @@ http://192.168.1.60
 
    1. 右上方选择`新增图表`，选择数图，左侧数值添加计量 `trip_distance`，后点击求和，在右侧将计量数值格式改为 `Sl 1.2k`，修改数图名为 `纽约出租车里程(km)`：
 
-        ![image](./assets/nyc_add_km.png)
+        ![image](./assets/nyc_add_km050.PNG)
 
 	2. 点击右上角`应用`，出现以下界面：
 
-        ![image](./assets/nyc_after_add_km.png)
+        ![image](./assets/nyc_after_add_km050.PNG)
 
    
 
@@ -205,10 +277,10 @@ http://192.168.1.60
 
    1. 右上方选择`新增图表`，选择饼图，左侧维度添加维度 `vendor_id`，点击计量下方选择框，选择 `passenger_count`，后点击求和，修改饼图名为 `纽约出租车市场份额`：
 
-        ![image](./assets/nyc_add_market.png)
+        ![image](./assets/nyc_add_market050.PNG)
 
 	2. 点击右上角`应用`，出现以下界面：
 
-        ![image](./assets/nyc_after_add_market.png)
+        ![image](./assets/nyc_after_add_market050.PNG)
    
    纽约出租车数据分析完成！
