@@ -214,7 +214,7 @@ http://192.168.1.60
 
    ![fill-megawise-info](./assets/fill-megawise-info.png)
 
-   ![dashboard-list](C:\Users\cheng\Desktop\捕获10.PNG)
+   ![dashboard-list](./assets/dashboard-list050.PNG)
 
 3. 新建纽约出租车数据的分析界面。
 
@@ -230,11 +230,11 @@ http://192.168.1.60
 
     选择点地图，点击数据表的选择框，选择 `nyc_taxi_50w`，在经度添加计量 `dropoff_longitude`，纬度添加计量 `dropoff_latitude`，修改地图名为 `纽约出租车`：
 
-    ![image](C:\Users\cheng\Desktop\捕获.PNG)
+    ![image](./assets/add.PNG)
 
     点击右上角`应用`，出现以下界面：
 
-    ![image](C:\Users\cheng\Desktop\捕获1.PNG)
+    ![image](./assets/add050.PNG)
 
    
 
@@ -242,22 +242,22 @@ http://192.168.1.60
 
     1. 右上方单机`新增图表`，选择折线图，左侧 X 轴添加维度 `tpep_dropoff_datetime`，分组时选择`天`，Y 轴添加维度 `total_amount`，修改折线图名为 `纽约出租车计量($ USD)`：
 
-        ![image](C:\Users\cheng\Desktop\捕获2.PNG)
+        ![image](./assets/nyc_add_line050.PNG)
 
     2. 点击右上角`应用`，出现以下界面：
 
-        ![image](C:\Users\cheng\Desktop\捕获3.PNG)
+        ![image](./assets/nyc_after_add_line050.PNG)
 
 
 6. 创建纽约出租车费用计数。
 
    1. 右上方选择`新增图表`，选择数图，左侧数值添加计量 `total_amount`，后点击求和，在右侧将计量数值格式改为 `Sl 1.2k`，修改数图名为 `出租车费用($ USD)`：
 
-        ![image](C:\Users\cheng\Desktop\捕获4.PNG)
+        ![image](./assets/nyc_add_usd050.PNG)
 
    2. 点击右上角`应用`，出现以下界面：
 
-        ![image](C:\Users\cheng\Desktop\捕获5.PNG)
+        ![image](./assets/nyc_after_add_usd050.PNG)
 
    
 
@@ -265,11 +265,11 @@ http://192.168.1.60
 
    1. 右上方选择`新增图表`，选择数图，左侧数值添加计量 `trip_distance`，后点击求和，在右侧将计量数值格式改为 `Sl 1.2k`，修改数图名为 `纽约出租车里程(km)`：
 
-        ![image](C:\Users\cheng\Desktop\捕获6.PNG)
+        ![image](./assets/nyc_add_km050.PNG)
 
 	2. 点击右上角`应用`，出现以下界面：
 
-        ![image](C:\Users\cheng\Desktop\捕获7.PNG)
+        ![image](./assets/nyc_after_add_km050.PNG)
 
    
 
@@ -277,10 +277,10 @@ http://192.168.1.60
 
    1. 右上方选择`新增图表`，选择饼图，左侧维度添加维度 `vendor_id`，点击计量下方选择框，选择 `passenger_count`，后点击求和，修改饼图名为 `纽约出租车市场份额`：
 
-        ![image](C:\Users\cheng\Desktop\捕获8.PNG)
+        ![image](./assets/nyc_add_market050.PNG)
 
 	2. 点击右上角`应用`，出现以下界面：
 
-        ![image](C:\Users\cheng\Desktop\捕获9.PNG)
+        ![image](./assets/nyc_after_add_market050.PNG)
    
    纽约出租车数据分析完成！
